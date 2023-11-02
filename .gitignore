@@ -1,0 +1,4 @@
+.env
+user_stats.json
+venv/
+linvenv/
