@@ -17,6 +17,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 infected_id = None
 guesses_left = 3
 transfer_flasher = False
+verified_member_role_id = 1080481494453190726  # Replace with your verified member role ID
 
 # User stats dictionary
 user_stats = {}
@@ -112,11 +113,15 @@ async def select_infected():
         infected_id = infected_member.id
         embed = discord.Embed(title="🦠 You are infected!", description="You have been infected with the MoneyVirus. Now people will try to uncover your identity. If they guess it correctly, you will be cured. If not, you will win.", color=discord.Colour.green())
         embed.set_footer(text="This message is sent from The Orange Squad. If you don't want to participate, please transfer.")
+        verified_member_role = guild.get_role(verified_member_role_id)
+        if verified_member_role not in infected_member.roles:
+            await select_infected()
+            return
         try:
-        	await infected_member.send(embed=embed, view=TransferView())
+            await infected_member.send(embed=embed, view=TransferView())
         except:
-        	await select_infected()
-        	return
+            await select_infected()
+            return
         channel = bot.get_channel(1168948527687286794)  # replace with your channel id
         embed2 = discord.Embed(title="🔍 Someone has been infected!", description=f"A random member has been infected with the MoneyVirus. Try to find out who it is! You have 3 guesses. If you guess correctly, the infected person will be cured. If not, the infected person will win.", color=discord.Colour.red())
         await channel.send(embed=embed2)
